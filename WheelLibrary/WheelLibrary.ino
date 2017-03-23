@@ -18,6 +18,7 @@ const int ci_Left_Motor = 9;
 const int ci_I2C_SDA = A4;         // I2C data = white
 const int ci_I2C_SCL = A5;         // I2C clock = yellow
 
+//EEPROM address assignment (change as per full list)
 const int ci_Left_Motor_Offset_Address_L = 12;
 const int ci_Left_Motor_Offset_Address_H = 13;
 const int ci_Right_Motor_Offset_Address_L = 14;
@@ -43,6 +44,21 @@ void setup() {
   pinMode(ci_Left_Motor, OUTPUT);
   servo_LeftMotor.attach(ci_Left_Motor);
 
+
+  // set up encoders. Must be initialized in order that they are chained together,
+  //CHECK WHCIH MOTOR IS FORWARD AND WHICH IS BACK
+  encoder_LeftMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_LeftMotor.setReversed(false);  // adjust for positive count when moving forward
+  encoder_RightMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_RightMotor.setReversed(true);  // adjust for positive count when moving forward
+
+  //EEPROM reading saved values
+  b_LowByte = EEPROM.read(ci_Left_Motor_Offset_Address_L);
+  b_HighByte = EEPROM.read(ci_Left_Motor_Offset_Address_H);
+  ui_Left_Motor_Offset = word(b_HighByte, b_LowByte);
+  b_LowByte = EEPROM.read(ci_Right_Motor_Offset_Address_L);
+  b_HighByte = EEPROM.read(ci_Right_Motor_Offset_Address_H);
+  ui_Right_Motor_Offset = word(b_HighByte, b_LowByte);
 }
 
 void loop() {
