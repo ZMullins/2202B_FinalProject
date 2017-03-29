@@ -13,6 +13,5 @@ unsigned long UltrasonicSensor::valueReturned() {
 	delayMicroseconds(10);  
 	digitalWrite(_iPin, LOW);
 	unsigned long val = pulseIn(_oPin, HIGH, 10000);
-	Serial.println(val, DEC);
 	return val;
 }
