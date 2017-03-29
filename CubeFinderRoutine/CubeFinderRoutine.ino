@@ -10,11 +10,17 @@ Servo servo_LeftMotor;
 I2CEncoder encoder_RightMotor;
 I2CEncoder encoder_LeftMotor;
 
+
 //Port pin constants
 const int hSensorPin = A1;
 const int rightMotorPin = 8;
 const int leftMotorPin = 9;
 
+
+
+DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor);
+HSensor hallSense;
+int temp;
 void setup() {
   Wire.begin();
   Serial.begin(9600);
@@ -29,13 +35,13 @@ void setup() {
   encoder_RightMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_RightMotor.setReversed(true);  // adjust for positive count when moving forward
 
-
   pinMode(hSensorPin, INPUT);
-
-
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
 
+void loop() {
+
+  temp=hallSense.cubeDist();
+Serial.println(temp);
+delay(500);
 }

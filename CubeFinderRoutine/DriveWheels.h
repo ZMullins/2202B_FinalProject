@@ -3,11 +3,16 @@
 #include <Wire.h>
 #include "I2CEncoder.h"
 #include "uSTimer2.h"
-#include <time.h>
+#include <arduino.h>
 
 class DriveWheels {
 public:
-    DriveWheels(Servo servo_RightMotor, Servo servo_LeftMotor, I2CEncoder* encoder_RightMotor, I2CEncoder* encoder_LefttMotor);
+    DriveWheels(Servo& leftObject, Servo& rightObject, I2CEncoder& leftEnc, I2CEncoder& rightEnc){
+        servo_LeftMotor=&leftObject;
+        servo_RightMotor = &rightObject;
+        encoder_LeftMotor=&leftEnc;
+        encoder_RightMotor=&rightEnc;
+    }
     
 public:
     Servo* servo_RightMotor;
