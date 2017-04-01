@@ -1,14 +1,15 @@
 #ifndef IRSensor_h
 #define IRSensor_h
 #include "Arduino.h"
+
 class IRSensor {
 public:
-	IRSensor(int pin = 2);
+	IRSensor(int switchPin = 8, int cOne = 5, int cTwo = 6, int cThree = 7);
+	bool AE();
 	int valueReturned();
-	//Create variable to track what letters are being looked for
-	//Create function to toggle which letters are being looked for
-	//Check if its finding these letters
+	bool checkLetters(bool lookingAE);
+	//variable to track what letters are being looked for
 private:
-	int _pin;
+	int _switchPin;
 };
 #endif

@@ -8,15 +8,26 @@ Servo servo_GripMotor;
 HSensor hallSensor(1); 
 UltrasonicSensor Ultrasonic(2,3);
 OpticalSensor Optical(0); 
-IRSensor IRSensor(4);
+IRSensor IR(10,5,6,7);
 void setup() {
   Serial.begin(2400);
+    pinMode(10, INPUT);
   pinMode(8, OUTPUT);
   servo_GripMotor.attach(8);
-  
  }
 
 void loop() {
+  bool statusv = IR.AE();
+  if (Serial.available() > 0) {
+    Serial.println("ll");
+    if (IR.checkLetters(false)) {
+      Serial.println("Great Success!");
+    }
+    else {
+      Serial.println("nope");
+    }
+  }
+  /*
 	unsigned long val = Ultrasonic.valueReturned();
  int val2 = Optical.valueReturned();
   Serial.println(val2);
@@ -28,5 +39,5 @@ void loop() {
   }
   if (grabbed == false) {
    
- servo_GripMotor.write(70);}
+ servo_GripMotor.write(70);}*/
 }
