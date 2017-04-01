@@ -26,17 +26,17 @@ bool IRSensor::AE() {
 bool IRSensor::checkLetters(bool lookingAE) {
 	if (lookingAE == true) {
 		if ((valueReturned() == 'A' || valueReturned() == 'E')) {
-			CharliePlexM::Write(13, 1);
+			CharliePlexM::Write(12, 1);
 			delay(100);
-			CharliePlexM::Write(13, 0);
+			CharliePlexM::Write(12, 0);
 			delay(100);
 			return true;
 		}
 	}
 	else if ((valueReturned() == 'O' || valueReturned() == 'I')) {
-		CharliePlexM::Write(13, 1);
+		CharliePlexM::Write(12, 1);
 	    delay(100);
-		CharliePlexM::Write(13, 0);
+		CharliePlexM::Write(12, 0);
 		delay(100);
 		return true;
 	}

@@ -20,11 +20,8 @@ void loop() {
   bool statusv = IR.AE();
   if (Serial.available() > 0) {
     Serial.println("ll");
-    if (IR.checkLetters(false)) {
+    if (IR.checkLetters(statusv)) {
       Serial.println("Great Success!");
-    }
-    else {
-      Serial.println("nope");
     }
   }
   /*
