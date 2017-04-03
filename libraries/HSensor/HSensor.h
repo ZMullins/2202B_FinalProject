@@ -1,16 +1,26 @@
-#ifndef HSensor_h
-#define HSensor_h
-#include "Arduino.h"
+#include<arduino.h>
+
 class HSensor {
 public:
-	HSensor(int Hpin = 1);
-	bool cubeDistWithin(int distance);
-	int cubeDist();
-	void hSensorCallibrationVal();
-	bool cubeSearch();
-private:
-	int defaultSensorVal = 517;
-	int _pin;
+    HSensor(){}
+public:
+    int hSensorVal=1;
+    int defaultSensorVal=517;
+    
+public:
+    //Hall Effect Sensor Functions
+    int cubeDist();
+    bool cubeDistWithin(int distance);
+    void hSensorCallibrationVal();
+    bool cubeSearch();
 };
-#endif
+
+
+
+
+
+
+
+
+
 

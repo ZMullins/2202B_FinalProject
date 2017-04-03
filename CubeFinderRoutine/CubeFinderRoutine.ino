@@ -14,39 +14,50 @@ I2CEncoder encoder_LeftMotor;
 
 //Port pin constants
 const int hSensorPin = A1;
-const int ultraLFInPin = 2;
-const int ultraLFOutPin = 3;
-const int ultraLBInPin = 4;
-const int ultraLBOutPin = 5;
+const int ultraSideInPin = 2;
+const int ultraSideOutPin = 3;
+const int ultraFrontInPin = 4;
+const int ultraFrontOutPin = 5;
 const int leftMotorPin = 8;
 const int rightMotorPin = 9;
 
 
 //EEPROM
-const int rightOffAddL=12;
-const int rightOffAddH=13;
-const int leftOffAddL=14;
-const int leftOffAddH=15;
+const int rightOffAddL = 12;
+const int rightOffAddH = 13;
+const int leftOffAddL = 14;
+const int leftOffAddH = 15;
 
 
 const int defaultDriveSpeed = 300;
 const int defaultDriveOversteer = 50;
-const int disFromWall = 800;
+const int disFromWall = 1070;
 
 DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor, defaultDriveSpeed);
 HSensor hallSense;
-UltrasonicSensor ultraLFSense(ultraLFInPin, ultraLFOutPin), ultraLBSense(ultraLBInPin, ultraLBOutPin);
+UltrasonicSensor ultraSideSense(ultraSideInPin, ultraSideOutPin), ultraFrontSense(ultraFrontInPin, ultraFrontOutPin);
 
 
 bool isMotorNotSet = true;
 int driveStage = 0;
-int ultraLFDif = 0, ultraLBDif = 0;
+int ultraSideDif = 0, ultraLBDif = 0;
+int ultraTolerance = 60;
+int numDivisions = 10;
+unsigned int sensorCheckInterval = 100, sensorDisInterval = sensorCheckInterval * numDivisions, currentTime, previousTime;
+
+int tempContainer=0;
 
 
-int temp, temp1;
-bool yes=false, no=true;
+bool no = false, yes = true, wallClose = false;
 long right1, left1, right2, left2, rightOff, leftOff;
 unsigned long time1, time2;
+
+
+int ultraSideCount;
+
+int arr1[10], arr2[10];
+
+
 
 
 void setup() {
@@ -68,92 +79,104 @@ void setup() {
 
 
 void loop() {
+  if (ultraFrontSense.valueReturned()  < 200){
+    wallClose=true;
+  }
+
+
+  
   //  if (hallSense.cubeSearch()) {
-  if ((1)) {
-
-    time2=millis();
-    if (time2-time1 >= 5000){
-      yes=true;
-    }
-
-    if (no) {
-      right2 = wheels.encoder_RightMotor->getRawPosition();
-      left2 = wheels.encoder_LeftMotor->getRawPosition();
-      wheels.driveFwd();
-      time1=millis();
-    } else if (yes) {
-      wheels.noDrive();
-      right2 = wheels.encoder_RightMotor->getRawPosition();
-      left2 = wheels.encoder_LeftMotor->getRawPosition();
-      if ( left2 > right2 )
-      {
-        // May have to update this if different calibration time is used
-        rightOff = 0;
-        leftOff = (right2 - left2) / 4;
-      }
-      else
-      {
-        // May have to update this if different calibration time is used
-        rightOff = (right2 - left2) / 4;
-        leftOff = 0;
-      }
-
-      EEPROM.write(rightOffAddL, lowByte(rightOff));
-      EEPROM.write(rightOffAddH, highByte(rightOff));
-      EEPROM.write(leftOffAddL, lowByte(leftOff));
-      EEPROM.write(leftOffAddH, highByte(leftOff));
-    }
+  if ((0)) {
 
 
   } else {
-    ultraLFDif = disFromWall - ultraLFSense.valueReturned();
-    ultraLBDif = disFromWall - ultraLBSense.valueReturned();
-
-    if (abs(ultraLFDif) < 120)
-      ultraLFDif = 0;
-    if (abs(ultraLBDif) < 120)
-      ultraLBDif = 0;
-
-    if (ultraLFDif == 0 && ultraLBDif == 0) {
-      if (isMotorNotSet && driveStage != 1) {
-        wheels.driveFwd();
-        isMotorNotSet = false;
-        driveStage = 1;
-        Serial.println("here1");
-      }
-    } else if (ultraLFDif != 0) {
-      if (ultraLFDif < 0) {
-        if (isMotorNotSet && driveStage != 2) {
-          wheels.turn(-200, -300);
-          isMotorNotSet = false;
-          driveStage = 2;
-          Serial.println("here2");
-        }
-      } else if (ultraLFDif > 0) {
-        if (isMotorNotSet && driveStage != 2) {
-          wheels.turn(-300, -200);
-          isMotorNotSet = false;
-          driveStage = 2;
-          Serial.println("here3");
-        }
-      }
-    } else if (ultraLBDif != 0) {
-      if (ultraLBDif < 0) {
-        if (isMotorNotSet && driveStage != 3) {
-          wheels.turn(0, 200);
-          isMotorNotSet = false;
-          driveStage = 3;
-          Serial.println("here4");
-        }
-      } else if (ultraLBDif > 0) {
-        if (isMotorNotSet && driveStage != 3) {
-          wheels.turn(0, -200);
-          isMotorNotSet = false;
-          driveStage = 3;
-          Serial.println("here5");
-        }
+    time2=millis();
+    
+    if (time2>=time1){
+      tempContainer=ultraSideSense.valueReturned();
+      if (tempContainer){
+      ultraSideDif=disFromWall-tempContainer;
+      time1=millis();
+      tempContainer=0;
       }
     }
+
+    Serial.println(ultraSideDif);
+
+
+
+
+
+    //
+    //    currentTime = millis();
+    //
+    //    if (currentTime - previousTime <= sensorCheckInterval) {
+    //      arr1[counter] = ultraLFSense.valueReturned();
+    //      arr2[counter] = ultraLBSense.valueReturned();
+    //      counter++;
+    //
+    //    }
+    //
+    //    if (currentTime - previousTime <= sensorDisInterval) {
+    //      float temp;
+    //      int i, j;
+    //      // the following two loops sort the array x in ascending order
+    //      for (i = 0; i < numDivisions - 1; i++) {
+    //        for (j = i + 1; j < numDivisions; j++) {
+    //          if (arr1[j] < arr1[i]) {
+    //            // swap elements
+    //            temp = arr1[i];
+    //            arr1[i] = arr1[j];
+    //            arr1[j] = temp;
+    //          }
+    //        }
+    //      }
+    //
+    //      if (numDivisions % 2 == 0) {
+    //        // if there is an even number of elements, return mean of the two elements in the middle
+    //        ultraLFDif= ((arr1[numDivisions / 2] + arr1[numDivisions / 2 - 1]) / 2.0);
+    //      } else {
+    //        // else return the element in the middle
+    //        ultraLFDif= arr1[numDivisions / 2];
+    //      }
+    //
+    //      float temp;
+    //      int i, j;
+    //      // the following two loops sort the array x in ascending order
+    //      for (i = 0; i < numDivisions - 1; i++) {
+    //        for (j = i + 1; j < numDivisions; j++) {
+    //          if (arr2[j] < arr2[i]) {
+    //            // swap elements
+    //            temp = arr2[i];
+    //            arr2[i] = arr2[j];
+    //            arr2[j] = temp;
+    //          }
+    //        }
+    //      }
+    //
+    //      if (numDivisions % 2 == 0) {
+    //        // if there is an even number of elements, return mean of the two elements in the middle
+    //        ultraLBDif= ((arr2[numDivisions / 2] + arr2[numDivisions / 2 - 1]) / 2.0);
+    //      } else {
+    //        // else return the element in the middle
+    //        ultraLBDif= arr2[numDivisions / 2];
+    //      }
+    //
+    //      counter=0;
+    //
+    //    }
+
+//    currentTime = millis();
+//
+//    if (currentTime - previousTime <= sensorCheckInterval) {
+//      ultraLFCount += ultraLFSense.valueReturned();
+//      ultraLFCount += ultraLBSense.valueReturned();
+//    }
+
+
+
+      
+    
   }
 
 }
