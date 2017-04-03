@@ -5,15 +5,8 @@
 
 //default forward drive
 void DriveWheels::driveFwd() {
-              
     servo_LeftMotor->writeMicroseconds(1500 + ui_Motors_Speed);
     servo_RightMotor->writeMicroseconds(1500 + ui_Motors_Speed);
-}
-
-void DriveWheels::driveFwdEnc() {
-              
-    servo_LeftMotor->writeMicroseconds(1500 + ui_Motors_Speed+ui_Left_Motor_Offset);
-    servo_RightMotor->writeMicroseconds(1500 + ui_Motors_Speed+ui_Right_Motor_Offset);
 }
 
 //default backward drive
