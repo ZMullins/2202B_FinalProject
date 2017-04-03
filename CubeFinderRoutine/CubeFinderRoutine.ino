@@ -31,7 +31,8 @@ const int leftOffAddH = 15;
 
 const int defaultDriveSpeed = 300;
 const int defaultDriveOversteer = 50;
-const int disFromWall = 1070;
+//const int disFromWall = 1070;
+const int disFromWall=1500;
 
 DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor, defaultDriveSpeed);
 HSensor hallSense;
@@ -41,7 +42,7 @@ UltrasonicSensor ultraSideSense(ultraSideInPin, ultraSideOutPin), ultraFrontSens
 bool isMotorNotSet = true;
 int driveStage = 0;
 int ultraSideDif = 0, ultraLBDif = 0;
-int ultraTolerance = 60;
+int ultraTolerance = 40;
 int numDivisions = 10;
 unsigned int sensorCheckInterval = 100, sensorDisInterval = sensorCheckInterval * numDivisions, currentTime, previousTime;
 
@@ -101,11 +102,19 @@ void loop() {
       }
     }
 
-    Serial.println(ultraSideDif);
-
-
-
-
+    if (abs(ultraSideDif) <=ultraTolerance){
+      if (isMotorNotSet && driveStage!=1){
+        wheels.driveFwd();
+      }
+    } else if (ultraSideDif<0){
+            if (isMotorNotSet && driveStage!=2){
+        wheels.turn(150,400);
+      }
+    } else if (ultraSideDif>0){
+                  if (isMotorNotSet && driveStage!=3){
+        wheels.turn(400,150);
+      }
+    }
 
     //
     //    currentTime = millis();
