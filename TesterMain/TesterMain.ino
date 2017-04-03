@@ -10,12 +10,13 @@
 #include <Wire.h>
 const int rightMotorPin = 8;
 const int leftMotorPin = 9;
+
 Servo servo_RightMotor;
 Servo servo_LeftMotor;
 I2CEncoder encoder_RightMotor;
 I2CEncoder encoder_LeftMotor;
-DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor,500);
-HSensor hallSensor(1); 
+DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor,290);
+//HSensor hallSensor(1); 
 UltrasonicSensor Ultrasonic(2,3);
 OpticalSensor Optical(0); 
 IRSensor IR(10,5,6,7);
@@ -35,13 +36,14 @@ void setup() {
 
 void loop() {
   bool statusv = IR.AE();
-  int count = 0
+  int count = 0;
   while (!(Serial.available() >0)) {
-    if (count < 50) {
+    count++
+    if (count < 20) {
       wheels.turn(200, -200);
       delay (100);}
      else {
-      wheels.turn(200, -200);
+      wheels.turn(-200, 200);
       delay(100);
      }
   }
@@ -66,4 +68,3 @@ void loop() {
   if (grabbed == false) {
    
  servo_GripMotor.write(70);}*/
-}
