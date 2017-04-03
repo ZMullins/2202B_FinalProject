@@ -10,26 +10,26 @@ void SwivelArm::goToZero() {
 
 void SwivelArm::goToNeg() {
     
-    servo_armMotor->write(negPos);
+    servo_ArmMotor->write(negPos);
 }
 
 void SwivelArm::goToPos() {
     
-    servo_armMotor->write(posPos);
+    servo_ArmMotor->write(posPos);
 }
 
 void SwivelArm::goToSlide() {
     
-    servo_armMotor->write(slidePos);
+    servo_ArmMotor->write(slidePos);
 }
 
 void SwivelArm::stopHere(){
-    int temp =servo_armMotor->read()
-    servo_armMotor->write(temp);
+    int temp =servo_ArmMotor->read()
+    servo_ArmMotor->write(temp);
 }
 
 void SwivelArm::armRefresh(){
-    servo_armMotor->refresh();
+    servo_ArmMotor->refresh();
 }
 
 
