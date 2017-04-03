@@ -106,5 +106,10 @@ void DriveWheels::turnDeg(int motorSpeed, int degreeTurn){
     noDrive();
 }
 
+//refresh for Servos
+void DriveWheels::wheelRefresh(){
+    servo_LeftMotor->refresh();
+    servo_RightMotor->refresh();
+}
 
 
