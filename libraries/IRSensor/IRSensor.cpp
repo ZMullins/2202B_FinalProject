@@ -24,28 +24,22 @@ bool IRSensor::AE() {
 	}
 }
 bool IRSensor::checkLetters(bool lookingAE) {
+	char val = valueReturned();
 	if (lookingAE == true) {
-		if ((valueReturned() == 'A' || valueReturned() == 'E')) {
-			CharliePlexM::Write(12, 1);
-			delay(100);
-			CharliePlexM::Write(12, 0);
-			delay(100);
+		if ((val == 'A' || val == 'E')) {
+			Serial.println(val);
 			return true;
 		}
 	}
-	else if ((valueReturned() == 'O' || valueReturned() == 'I')) {
-		CharliePlexM::Write(12, 1);
-	    delay(100);
-		CharliePlexM::Write(12, 0);
-		delay(100);
+	else if ((val == 'O' || val == 'I')) {
+		Serial.println(val);
 		return true;
 	}
-	else {
+
 		return false;
-	}
 }
 
-	int IRSensor::valueReturned() {
+	char IRSensor::valueReturned() {
 		char val = Serial.read();
 		return val;
 	}

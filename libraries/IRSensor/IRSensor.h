@@ -4,9 +4,9 @@
 
 class IRSensor {
 public:
-	IRSensor(int switchPin = 8, int cOne = 5, int cTwo = 6, int cThree = 7);
+	IRSensor(int switchPin, int cOne = 5, int cTwo = 6, int cThree = 7);
 	bool AE();
-	int valueReturned();
+	char valueReturned();
 	bool checkLetters(bool lookingAE);
 	//variable to track what letters are being looked for
 private:

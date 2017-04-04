@@ -38,7 +38,12 @@ const int leftOffAddH = 15;
 
 const int defaultDriveSpeed = 300;
 const int defaultDriveOversteer = 50;
+<<<<<<< HEAD
+//const int disFromWall = 1070;
+const int disFromWall=1200;
+=======
 const int disFromWall = 1070;
+>>>>>>> origin/master
 
 DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor, defaultDriveSpeed);
 HSensor hallSense;
@@ -84,8 +89,15 @@ void setup() {
 
 
 void loop() {
+<<<<<<< HEAD
   if (ultraFrontSense.valueReturned()  < 200) {
     wallClose = true;
+=======
+  wheels.driveFwd();
+}
+ /* if (ultraFrontSense.valueReturned()  < 200){
+    wallClose=true;
+>>>>>>> origin/master
   }
 
 
@@ -124,12 +136,34 @@ void loop() {
       }
     }
 
+<<<<<<< HEAD
 
     //Driving Control
     if (overWall && isStraight) {
       if (driveStage != 1) {
         wheels.turn(220,230);
         driveStage = 1;
+=======
+    if (abs(ultraSideDif) <=ultraTolerance){
+      if (isMotorNotSet && driveStage!=1){
+        wheels.driveFwd();
+      }
+    } else if (ultraSideDif<0){
+            if (isMotorNotSet && driveStage!=2){
+<<<<<<< HEAD
+        wheels.turn(150,250);
+      }
+    } else if (ultraSideDif>0){
+                  if (isMotorNotSet && driveStage!=3){
+        wheels.turn(250,150);
+=======
+        wheels.turn(200,250);
+      }
+    } else if (ultraSideDif>0){
+                  if (isMotorNotSet && driveStage!=3){
+        wheels.turn(250,200);
+>>>>>>> origin/master
+>>>>>>> origin/master
       }
 
     } else if (!isStraight) {
@@ -158,6 +192,7 @@ void loop() {
     }
   }
 
+<<<<<<< HEAD
   //
   //    currentTime = millis();
   //
@@ -225,3 +260,6 @@ void loop() {
   //    }
 
 }
+=======
+}*/8
+>>>>>>> origin/master
