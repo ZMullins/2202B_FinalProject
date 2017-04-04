@@ -54,6 +54,7 @@ class DriveWheels {
     void setupOffset(unsigned int leftOffset, unsigned int rightOffset);
     void turn(int left_Motor_Speed, int right_Motor_Speed);
     void turnDeg(int motorSpeed, int degreeTurn);
+    void wheelRefresh();
 
 };
 
