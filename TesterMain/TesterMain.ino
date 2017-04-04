@@ -9,8 +9,9 @@
 #include <I2CEncoder.h>
 #include <Wire.h>
 const int rightMotorPin = 8;
-const int leftMotorPin = 9;
-
+const int leftMotorPin = 9; 
+int currentMillis;
+int previousMillis;
 Servo servo_RightMotor;
 Servo servo_LeftMotor;
 I2CEncoder encoder_RightMotor;
@@ -36,24 +37,21 @@ void setup() {
 
 void loop() {
   bool statusv = IR.AE();
-  int count = 0;
+
+   
+   
   while (!(Serial.available() >0)) {
-    count++
-    if (count < 20) {
-      wheels.turn(200, -200);
-      delay (100);}
-     else {
-      wheels.turn(-200, 200);
-      delay(100);
-     }
+      wheels.turn(-200, 180);
   }
   wheels.noDrive();
+  while (Serial.available() > 0) {
     if (IR.checkLetters(statusv)) {
-      Serial.println("Great Success!");
+
+
       wheels.driveFwd();
-      delay(500);
-      wheels.noDrive();
     }
+   }
+delay(500);
   }
   /*
 	unsigned long val = Ultrasonic.valueReturned();
