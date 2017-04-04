@@ -11,7 +11,7 @@ class SwivelArm {
   public:
     Servo* servo_ArmMotor;
 
-    const int adjustDeg=10;
+    const int adjustDeg=15;
     const int zeroPos = adjustDeg;
     const int negPos = 0;
     const int posPos = adjustDeg*2;;

@@ -34,7 +34,7 @@ class DriveWheels {
     unsigned int ui_Right_Motor_Offset;
     byte b_LowByte;
     byte b_HighByte;
-    const float axleLength = 10.0; //inches
+    const float axleLength = 9.06; //inches
     const float wheelDiameter = 4.0; //inches
     const float disPerRot = axleLength * 3.15159;
     const float radToDegree = 57.2958;
