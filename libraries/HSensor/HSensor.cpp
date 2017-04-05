@@ -27,13 +27,19 @@ void HSensor::hSensorCallibrationVal() {
 
 
 bool HSensor::cubeSearch(){
-    int temp = analogRead(hSensorVal)- defaultSensorVal;
-    temp=abs(temp);
+	
+    int valer = analogRead(hSensorVal)- defaultSensorVal;
+    valer=abs(valer);
     
-    if (temp > 1){
-        return true;
-    }
+    if (valer > 5){
+
+    
+	/*if (count > 10) {
+		count = 0;*/
+		return true;
+	}
     return false;
+	delay(50);
 }
 
 

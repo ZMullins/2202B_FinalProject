@@ -4,7 +4,7 @@
 
 class Gripper {
   public:
-    SwivelArm(Servo& armObject) {
+    Gripper(Servo& armObject) {
       servo_GripperMotor = &armObject;
     }
 
@@ -12,7 +12,7 @@ class Gripper {
     Servo* servo_GripperMotor;
 
     const int openPos = 60;
-    const int closePos = 105;
+    const int closePos = 150	;
 
   public:
     //Wheel driving functions
