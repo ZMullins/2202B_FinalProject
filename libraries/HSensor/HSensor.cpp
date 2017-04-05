@@ -24,14 +24,16 @@ void HSensor::hSensorCallibrationVal() {
     //normalized value is now set
     defaultSensorVal=temp;
 }
-
+void HSensor::changeTolerance(int newTol) {
+	tol = newTol;
+}
 
 bool HSensor::cubeSearch(){
 	
     int valer = analogRead(hSensorVal)- defaultSensorVal;
     valer=abs(valer);
     
-    if (valer > 5){
+	if (valer > tol) {
 
     
 	/*if (count > 10) {
@@ -39,7 +41,6 @@ bool HSensor::cubeSearch(){
 		return true;
 	}
     return false;
-	delay(50);
 }
 
 

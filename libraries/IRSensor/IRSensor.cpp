@@ -12,7 +12,7 @@ IRSensor::IRSensor(int switchPin, int cOne, int cTwo, int cThree) {
 	pinMode(_switchPin, INPUT);
 }
 bool IRSensor::AE() {
-	if (digitalRead(_switchPin) == HIGH) {
+	if (digitalRead(2) == HIGH) {
 		CharliePlexM::Write(2, 1);
 		CharliePlexM::Write(1, 0);
 		return true;
@@ -35,7 +35,6 @@ bool IRSensor::checkLetters(bool lookingAE) {
 		Serial.println(val);
 		return true;
 	}
-
 		return false;
 }
 

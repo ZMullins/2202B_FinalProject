@@ -12,12 +12,11 @@
 #include <Wire.h>
 
 int i = 0;
-int count = 0;
+bool endOfCube = false;
+int countA = 0;
+int caseA = 0;
+const int switchPin = 2;
 const int hSensorPin = 1;
-const int ultraWallInPin = 2;
-const int ultraWallOutPin = 3;
-const int ultraFrontInPin = 4;
-const int ultraFrontOutPin = 5;
 const int leftMotorPin = 8;
 const int rightMotorPin = 9;
 const int armMotorPin = 10;
@@ -38,11 +37,11 @@ Gripper grip(servo_Gripper);
 UltrasonicSensor Ultrasonic(12,13);
 SwivelArm arm(servo_ArmMotor);
 OpticalSensor Optical(0); 
-IRSensor IR(10,5,6,7);
+IRSensor IR(2,5,6,7);
 void setup() {
   Wire.begin();
   Serial.begin(2400);
-    pinMode(10, INPUT);
+    pinMode(2, INPUT);
    pinMode(rightMotorPin, OUTPUT);
   servo_RightMotor.attach(rightMotorPin);
   pinMode(leftMotorPin, OUTPUT);
@@ -55,7 +54,6 @@ void setup() {
   encoder_LeftMotor.setReversed(false);  // adjust for positive count when moving forward
   encoder_RightMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_RightMotor.setReversed(true); 
-  pinMode(hSensorPin, INPUT);
 int val = Ultrasonic.valueReturned();
  /* while (val < 500){
     val = Ultrasonic.valueReturned();
@@ -63,24 +61,98 @@ int val = Ultrasonic.valueReturned();
     arm.goToDeg(i);
     delay(1000);
    }*/
-     wheels.turn(210,225);
+  
   }
  
 
 void loop() {
- 
-Serial.println(analogRead(1));
+  /*
+  //  if(statusv == true) {
+    //  Serial.println(statusv);
+    //}
+    while (Serial.available() > 0) {
+      bool statusv = IR.AE();
+    if (IR.checkLetters(statusv)){
+      Serial.println("Yup");
+    }
+}}*/
+ /*if (caseA == 0) {
+   wheels.turn(400, 400);
+         if (analogRead(switchPin) == HIGH){
+        grip.closeGripper();
 
-  if(hallSense.cubeSearch() == true){
-    wheels.noDrive();
-   grip.closeGripper();
-   //wheels.driveBkwd();
+        caseA = 2;
+        }
+   if (Ultrasonic.valueReturned() < 300 && Ultrasonic.valueReturned()!= 0) {
+       countA++;
+      }
+      if (countA > 10) {
+        caseA = 1;
+      }
+
+  }*/
+  if (caseA == 1) {
+    //Swing arm to find cube on corner
+  }
+ // if (caseA == 2) {
+    bool statusv = IR.AE();
+    while (!(Serial.available() >0)) {
+      wheels.turn(-200, 180);
+  }
+  wheels.noDrive();
+  while (Serial.available() > 0) {
+    if (IR.checkLetters(statusv)) {
+
+
+      wheels.driveFwd();
+    }
+//   }
+delay(500);
+  }
+  if (caseA == 3) {
+    //Tip Pyramid
+  }
+  if (caseA == 4) {
+    //inject cube
+  }
+  if (caseA == 5) {
+    //set down pyramid, back up
+  }
+}
+
+
+
+
+
+
+
+  /*    }
+  //  if (!endOfCube) {
+      if (Ultrasonic.valueReturned() < 300 && Ultrasonic.valueReturned() != 0) {
+        countA++;
+        Serial.println("So this is a reading");
+      }
+      if (countA > 10) {
+        endOfCube = true;
+      }
+    if(hallSense.cubeSearch()){
+   // wheels.noDrive();
+  grip.closeGripper();
+  countB++;
+  //3Serial.println("Great Success!!");
+  if (countB>20){
+  hallSense.changeTolerance(2);}
   }
   else {
-  //  wheels.turn(200,204);
+    wheels.turn(235,220);
       grip.openGripper();
+  }}
+  else {
+    wheels.turn(-250,-200);
+    
   }
-  }
+  }*/
+  
  /* delay(10000);
   for  (int iz = i; iz == i-30; iz-=10) {
     arm.goToDeg(iz);
@@ -132,19 +204,7 @@ wheels.driveFwd();
  Serial.println(val);
  Serial.println(driveStraight);}
   /*  
-  while (!(Serial.available() >0)) {
-      wheels.turn(-200, 180);
-  }
-  wheels.noDrive();
-  while (Serial.available() > 0) {
-    if (IR.checkLetters(statusv)) {
-
-
-      wheels.driveFwd();
-    }
-   }
-delay(500);
-  }*/
+  */
   /*
 	unsigned long val = Ultrasonic.valueReturned();
  int val2 = Optical.valueReturned();
