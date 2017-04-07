@@ -40,18 +40,29 @@ Servo servo_tipActMotor;
 Servo servo_linActMotor;
 I2CEncoder encoder_RightMotor;
 I2CEncoder encoder_LeftMotor;
-DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor,290);
-HSensor hallSense; 
+DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor, 290);
+HSensor hallSense(hSensorPin);
 Gripper grip(servo_Gripper);
-UltrasonicSensor Ultrasonic(12,13);
+UltrasonicSensor Ultrasonic(12, 13);
 SwivelArm arm(servo_ArmMotor);
+<<<<<<< Updated upstream
 OpticalSensor Optical(0); 
 IRSensor IR(3,5,6,7);
+=======
+OpticalSensor Optical(0);
+IRSensor IR(2, 5, 6, 7);
+
+
+bool zachHatesThis = true, cubePassed = false;
+long time1, time2, filterTime1, filterTime2;
+long cubeInterval = 600, successCount = 0, passThroughCount = 0;
+
+>>>>>>> Stashed changes
 void setup() {
   Wire.begin();
   Serial.begin(2400);
-    pinMode(2, INPUT);
-   pinMode(rightMotorPin, OUTPUT);
+  pinMode(2, INPUT);
+  pinMode(rightMotorPin, OUTPUT);
   servo_RightMotor.attach(rightMotorPin);
   pinMode(leftMotorPin, OUTPUT);
   servo_LeftMotor.attach(leftMotorPin);
@@ -60,24 +71,24 @@ void setup() {
  // pinMode(gripMotorPin, OUTPUT);
   pinMode(tipActMotorPin, OUTPUT);
   servo_Gripper.attach(gripMotorPin);
-    encoder_LeftMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
+  encoder_LeftMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_LeftMotor.setReversed(false);  // adjust for positive count when moving forward
   encoder_RightMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
-  encoder_RightMotor.setReversed(true); 
-int val = Ultrasonic.valueReturned();
- /* while (val < 500){
-    val = Ultrasonic.valueReturned();
-    i+=4;
-    arm.goToDeg(i);
-    delay(1000);
-   }*/
-  
-  }
- 
+  encoder_RightMotor.setReversed(true);
+  int val = Ultrasonic.valueReturned();
+  /* while (val < 500){
+     val = Ultrasonic.valueReturned();
+     i+=4;
+     arm.goToDeg(i);
+     delay(1000);
+    }*/
+
+}
+
 
 void loop() {
   /*
-  //  if(statusv == true) {
+    //  if(statusv == true) {
     //  Serial.println(statusv);
     //}
     while (Serial.available() > 0) {
@@ -85,21 +96,73 @@ void loop() {
     if (IR.checkLetters(statusv)){
       Serial.println("Yup");
     }
-}}*/
- /*if (caseA == 0) {
-   wheels.turn(400, 400);
-         if (analogRead(switchPin) == HIGH){
-        grip.closeGripper();
+    }}*/
+  if (caseA == 0) {
+    time2 = millis();
 
-        caseA = 2;
-        }
-   if (Ultrasonic.valueReturned() < 300 && Ultrasonic.valueReturned()!= 0) {
-       countA++;
-      }
-      if (countA > 10) {
-        caseA = 1;
-      }
 
+    if (successCount == 5 && passThroughCount != 5) {
+      successCount = 0;
+      passThroughCount = 0;
+    } else if (successCount == 5) {
+      cubePassed = true;
+      Serial.println("found Cube");
+
+
+      wheels.noDrive();
+      time1 = millis();
+      zachHatesThis = true;
+    }
+
+
+    passThroughCount++;
+
+
+    //    if (cubePassed) {
+    ////
+    ////      while (time2 - time1 <= cubeInterval) {
+    ////        wheels.drive(-200);
+    ////      }
+    //      wheels.noDrive();
+    //
+    //      if (hallSense.cubeSearch()) {
+    //        grip.closeGripper();
+    //      } else {
+    //        cubePassed = false;
+    //      }
+    //
+    //    }
+    //  } else if (hallSense.cubeSearch()) {
+
+
+    int temp = hallSense.cubeDist();
+    
+    if (hallSense.cubeSearch()) {
+      Serial.println(temp);
+      successCount++;
+      
+    } else {
+        if (zachHatesThis) {
+          wheels.drive(300);
+          grip.openGripper();
+          zachHatesThis = false;
+        }  
+      }
+    }
+    //   wheels.turn(400, 400);
+    //         if (analogRead(switchPin) == HIGH){
+    //        grip.closeGripper();
+    //
+    //        caseA = 2;
+    //        }
+    //   if (Ultrasonic.valueReturned() < 300 && Ultrasonic.valueReturned()!= 0) {
+    //       countA++;
+    //      }
+    //      if (countA > 10) {
+    //        caseA = 1;
+    //      }
+
+<<<<<<< Updated upstream
   }*/
  caseA = 0;
   if (caseA== -4) {
@@ -253,6 +316,38 @@ servo_tipActMotor.writeMicroseconds(1500);
    wheels.turn(-motorspeed,-motorspeed);
     
 }}
+=======
+    if (caseA == 1) {
+      //Swing arm to find cube on corner
+    }
+
+    if (caseA == 2) {
+      bool statusv = IR.AE();
+      while (!(Serial.available() > 0)) {
+        wheels.turn(-200, 180);
+      }
+      wheels.noDrive();
+      while (Serial.available() > 0) {
+        if (IR.checkLetters(statusv)) {
+
+
+          wheels.driveFwd();
+        }
+        //   }
+        delay(500);
+      }
+      if (caseA == 3) {
+        //Tip Pyramid
+      }
+      if (caseA == 4) {
+        //inject cube
+      }
+      if (caseA == 5) {
+        //set down pyramid, back up
+      }
+    }
+  }
+>>>>>>> Stashed changes
 
 
 
@@ -261,7 +356,7 @@ servo_tipActMotor.writeMicroseconds(1500);
 
 
   /*    }
-  //  if (!endOfCube) {
+    //  if (!endOfCube) {
       if (Ultrasonic.valueReturned() < 300 && Ultrasonic.valueReturned() != 0) {
         countA++;
         Serial.println("So this is a reading");
@@ -270,85 +365,85 @@ servo_tipActMotor.writeMicroseconds(1500);
         endOfCube = true;
       }
     if(hallSense.cubeSearch()){
-   // wheels.noDrive();
-  grip.closeGripper();
-  countB++;
-  //3Serial.println("Great Success!!");
-  if (countB>20){
-  hallSense.changeTolerance(2);}
-  }
-  else {
+    // wheels.noDrive();
+    grip.closeGripper();
+    countB++;
+    //3Serial.println("Great Success!!");
+    if (countB>20){
+    hallSense.changeTolerance(2);}
+    }
+    else {
     wheels.turn(235,220);
       grip.openGripper();
-  }}
-  else {
+    }}
+    else {
     wheels.turn(-250,-200);
-    
-  }
-  }*/
-  
- /* delay(10000);
-  for  (int iz = i; iz == i-30; iz-=10) {
-    arm.goToDeg(iz);
-    delay(700);
-   }
-    
-  //0 = drive straight, 1 is drive to right (left wheel more powerful), 2 is drive to left
-  int val = Ultrasonic.valueReturned();
-  int driveStraight = 0;
-  bool statusv = IR.AE();
-if (val < 500) {
-  driveStraight = 0;
-}
-else {
-  count++;
-  if (count > 4) {
+
+    }
+    }*/
+
+  /* delay(10000);
+    for  (int iz = i; iz == i-30; iz-=10) {
+     arm.goToDeg(iz);
+     delay(700);
+    }
+
+    //0 = drive straight, 1 is drive to right (left wheel more powerful), 2 is drive to left
+    int val = Ultrasonic.valueReturned();
+    int driveStraight = 0;
+    bool statusv = IR.AE();
+    if (val < 500) {
     driveStraight = 0;
     }
-   wheels.noDrive();
-   wheels.driveBkwd();
-   delay(300);
-   for  (int iz = i; iz < i+30; iz+=10) {
-    arm.goToDeg(-iz);
-    delay(700);
-   }
-  if (val < 500) {
-    driveStraight = 1;
-  }
-  else {
-   
-    driveStraight = 2;  }
-  delay(700);
+    else {
+    count++;
+    if (count > 4) {
+     driveStraight = 0;
+     }
+    wheels.noDrive();
+    wheels.driveBkwd();
+    delay(300);
+    for  (int iz = i; iz < i+30; iz+=10) {
+     arm.goToDeg(-iz);
+     delay(700);
+    }
+    if (val < 500) {
+     driveStraight = 1;
+    }
+    else {
 
-}
- if (driveStraight == 0) {
-wheels.driveFwd();
-  delay(1000);
- }
- 
- else if (driveStraight == 1) {
- wheels.turn(-260, -180);
-  delay(500);
- }
- else {
- 
- wheels.turn(-180, -260);
-  delay(500);
- }
- Serial.println(val);
- Serial.println(driveStraight);}
-  /*  
+     driveStraight = 2;  }
+    delay(700);
+
+    }
+    if (driveStraight == 0) {
+    wheels.driveFwd();
+    delay(1000);
+    }
+
+    else if (driveStraight == 1) {
+    wheels.turn(-260, -180);
+    delay(500);
+    }
+    else {
+
+    wheels.turn(-180, -260);
+    delay(500);
+    }
+    Serial.println(val);
+    Serial.println(driveStraight);}
+    /*
   */
   /*
-	unsigned long val = Ultrasonic.valueReturned();
- int val2 = Optical.valueReturned();
-  Serial.println(val2);
-  bool grabbed = false;
-  if (hallSensor.cubeSearch() == true) {
-    servo_GripMotor.write(90); 
+    unsigned long val = Ultrasonic.valueReturned();
+    int val2 = Optical.valueReturned();
+    Serial.println(val2);
+    bool grabbed = false;
+    if (hallSensor.cubeSearch() == true) {
+    servo_GripMotor.write(90);
     grabbed= true;
-    
-  }
-  if (grabbed == false) {
-   
- servo_GripMotor.write(70);}*/
+
+    }
+    if (grabbed == false) {
+
+    servo_GripMotor.write(70);}*/

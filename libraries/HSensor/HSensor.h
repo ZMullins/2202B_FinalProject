@@ -2,19 +2,21 @@
 
 class HSensor {
 public:
-    HSensor(){}
+    HSensor(int pin){
+        hallSensorPin=pin;
+    }
 public:
-    int hSensorVal=4;
+    int hallSensorPin;
     int defaultSensorVal=523;
 	int count = 0;
-	int tol = 5;
+	int tol = 10;
     
 public:
     //Hall Effect Sensor Functions
-    int cubeDist();
-    bool cubeDistWithin(int distance);
-    void hSensorCallibrationVal();
-    bool cubeSearch();
+    int cubeReading();
+    bool isCubeReadingWithin(int distance);
+    void hallSensorCallibration();
+    bool searchForCube();
 	void changeTolerance(int newTol);
 };
 

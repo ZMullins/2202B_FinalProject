@@ -3,22 +3,22 @@
 
 //Hall Effect Sensor Functions
 
-int HSensor::cubeDist(){
-    return analogRead(hSensorVal);
+int HSensor::cubeReading(){
+    return analogRead(hallSensorPin);
 }
 
-bool HSensor::cubeDistWithin(int distance){
-    if (cubeDist()>=distance){
+bool HSensor::isCubeReadingWithin(int distance){
+    if (cubeReading()>=distance){
         return true;
     }
     return false;
 }
 
-void HSensor::hSensorCallibrationVal() {
+void HSensor::hallSensorCallibration() {
     //Once arm has pivoted out of the way of the possible cube locations
     
     int temp=0;
-    while (!(cubeDistWithin(temp))){
+    while (!(isCubeReadingWithin(temp))){
         temp++;
     }
     //normalized value is now set
@@ -28,16 +28,12 @@ void HSensor::changeTolerance(int newTol) {
 	tol = newTol;
 }
 
-bool HSensor::cubeSearch(){
+bool HSensor::searchForCube(){
 	
-    int valer = analogRead(hSensorVal)- defaultSensorVal;
-    valer=abs(valer);
+    int differenceVal = analogRead(hallSensorPin)- defaultSensorVal;
+    differenceVal=abs(differenceVal);
     
-	if (valer > tol) {
-
-    
-	/*if (count > 10) {
-		count = 0;*/
+	if (differanceVal > tol) {
 		return true;
 	}
     return false;

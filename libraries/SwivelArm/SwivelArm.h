@@ -24,7 +24,7 @@ class SwivelArm {
     unsigned long previousMillis;
 
   public:
-    //Wheel driving functions
+    //Arm moving functions11
     void goToZero();
     void goToNeg();
     void goToPos();

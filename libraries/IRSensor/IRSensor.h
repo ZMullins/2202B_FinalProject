@@ -4,10 +4,10 @@
 
 class IRSensor {
 public:
-	IRSensor(int switchPin, int cOne = 5, int cTwo = 6, int cThree = 7);
+	IRSensor(int switchPin, int charOne = 5, int charTwo = 6, int charThree = 7);
 	bool AE();
-	char valueReturned();
-	bool checkLetters(bool lookingAE);
+	char getValue();
+	bool searchForPyramid(bool lookingForPyr);
 	//variable to track what letters are being looked for
 private:
 	int _switchPin;
