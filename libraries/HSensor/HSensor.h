@@ -4,8 +4,8 @@ class HSensor {
 public:
     HSensor(){}
 public:
-    int hSensorVal=1;
-    int defaultSensorVal=510;
+    int hSensorVal=4;
+    int defaultSensorVal=523;
 	int count = 0;
 	int tol = 5;
     

@@ -14,7 +14,8 @@ bool zachHatesThis = true, cubePassed = false, cubePassedTwo = false;
 long time1, time2, filterTime1, filterTime2;
 long cubeInterval = 600, successCount = 0, passThroughCount = 0;
 int currentTime = 0;
-int motorspeed = 320;
+int currentTime2 = 0;
+int motorspeed = 360;
 int previousTime = 0;
 int i = 0;
 bool firstTime = true;
@@ -32,18 +33,21 @@ const int linActMotorPin = 12;
 const int tipActMotorPin = 4;
 int currentMillis;
 int previousMillis;
+int currentMillis2;
 Servo servo_RightMotor;
 Servo servo_LeftMotor;
 Servo servo_ArmMotor;
 Servo servo_Gripper;
 Servo servo_tipActMotor;
 Servo servo_linActMotor;
+Servo servo_restrict;
 I2CEncoder encoder_RightMotor;
 I2CEncoder encoder_LeftMotor;
 DriveWheels wheels(servo_LeftMotor, servo_RightMotor, encoder_LeftMotor, encoder_RightMotor,290);
 HSensor hallSense; 
 Gripper grip(servo_Gripper);
 UltrasonicSensor Ultrasonic(12,13);
+SwivelArm restrict(servo_restrict);
 SwivelArm arm(servo_ArmMotor);
 OpticalSensor Optical(0); 
 IRSensor IR(3,5,6,7);
@@ -57,14 +61,17 @@ void setup() {
   servo_LeftMotor.attach(leftMotorPin);
   //pinMode(armMotorPin, OUTPUT);
   servo_ArmMotor.attach(armMotorPin);
+  servo_restrict.attach(2);
  // pinMode(gripMotorPin, OUTPUT);
   pinMode(tipActMotorPin, OUTPUT);
   servo_Gripper.attach(gripMotorPin);
+  
     encoder_LeftMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_LeftMotor.setReversed(false);  // adjust for positive count when moving forward
   encoder_RightMotor.init(1.0 / 3.0 * MOTOR_393_SPEED_ROTATIONS, MOTOR_393_TIME_DELTA);
   encoder_RightMotor.setReversed(true); 
 int val = Ultrasonic.valueReturned();
+arm.goToDeg(0);
  /* while (val < 500){
     val = Ultrasonic.valueReturned();
     i+=4;
@@ -103,6 +110,7 @@ void loop() {
   }*/
  caseA = 0;
   if (caseA== -4) {
+     restrict.goToDeg(0);
     for (int i =-360; i < 360; i+=50) {
       arm.goToDeg(i);
       delay(2000);
@@ -134,9 +142,11 @@ servo_tipActMotor.detach();
 wheels.turn(motorspeed + 50, motorspeed);
 firstTime = false;
   }
-    arm.goToDeg(0);
+    
+    
     time2 = millis();
      servo_tipActMotor.writeMicroseconds(1200);
+     delay(3000);
     if (successCount == 5 && passThroughCount != 5) {
       successCount = 0;
       passThroughCount = 0;
@@ -150,7 +160,7 @@ passThroughCount = 0;
       zachHatesThis = true;
       if (cubePassedTwo == true) {
         grip.closeGripper();
-        delay(3000);
+        delay(2000);
         caseA = 1;
       }
     }
@@ -158,8 +168,8 @@ passThroughCount = 0;
     wheels.drive(-motorspeed);
     cubePassedTwo = true;
     cubePassed = false;
-    delay(300);
-    wheels.drive(motorspeed);
+    delay(600);
+wheels.noDrive();
   }
 
     passThroughCount++;
@@ -173,23 +183,32 @@ passThroughCount = 0;
     } else{
         if (zachHatesThis) {
           wheels.drive(motorspeed);
-          grip.openGripper();
+          if (caseA == 0) {
+          grip.openGripper();}
           zachHatesThis = false;
         }  
       }
     }
     if (caseA == 1) {
-      
+      wheels.drive(motorspeed);
+      delay(400);
+      servo_LeftMotor.detach();
+      servo_RightMotor.detach();
       arm.goToDeg(400);
-      delay(1050);
-      grip.openGripper();
-      delay(2000);
-      caseA=2;
-      delay(5000);
-      arm.goToDeg(0);
+      delay(1000);
+      //grip.openGripper();
+
+  servo_LeftMotor.attach(leftMotorPin);
+  servo_RightMotor.attach(rightMotorPin);
+      for (int i =0; i < 3; i++){
+              wheels.turn(330, 300);
+        delay(3000);
+      wheels.drive(motorspeed);
+      delay(4000);}
+      caseA = 3;
     }
  if (caseA == 2) {
-  
+
   
 currentTime = millis();
     bool statusv = IR.AE();
@@ -199,9 +218,9 @@ currentTime = millis();
         motorOn = true;
         
         motorOnTwo = false;
-      wheels.turn(-motorspeed, motorspeed);}
-      if ((currentTime - previousTime) > 20000) {
-        wheels.turn(250,250);
+      wheels.turn(-motorspeed-100, motorspeed-100);}
+      if ((currentTime - previousTime) > 5000) {
+        wheels.turn(250,250);delay(500);
         previousTime = millis();
         while(((currentTime-previousTime)<3000 )) {
           wheels.turn(250,250);
@@ -210,7 +229,7 @@ currentTime = millis();
       }
   while (Serial.available() > 0) {
     if (IR.checkLetters(statusv)) {
-    
+    currentTime2 = 0;
   Serial.println("Reading");
 
 if (motorOnTwo == false) {
@@ -221,13 +240,19 @@ if (motorOnTwo == false) {
    
     }
   }
-   if (analogRead(switchPin == HIGH)) {
-      caseA = 3;
-      }
+  if (currentTime - currentTime2 > 90000) {
+     caseA = 3;
+  }
+   //if (analogRead(switchPin == HIGH)) {
+    //  caseA = 3;
+   //   }
+      firstTime = true;
   }
   delay(10);
   if (caseA == 3) {
-
+    if (firstTime == true) {
+    restrict.goToDeg(-90);}
+delay(500);
     servo_linActMotor.attach(linActMotorPin);
 servo_RightMotor.detach();
 servo_LeftMotor.detach();
@@ -236,11 +261,12 @@ servo_LeftMotor.detach();
        servo_tipActMotor.writeMicroseconds(1200);
 delay(1800);
 servo_tipActMotor.writeMicroseconds(1500);   
-servo_linActMotor.writeMicroseconds(1800);
+servo_linActMotor.writeMicroseconds(1700);
 delay (1200);
-servo_linActMotor.writeMicroseconds(1200);
+servo_linActMotor.writeMicroseconds(1300);
 delay(1200);
 servo_linActMotor.detach();
+restrict.goToDeg(180);
 caseA=4;}
  if (caseA == 4) {
     servo_tipActMotor.writeMicroseconds(1800);
